@@ -1,0 +1,1320 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     49595,       1312]
+NotebookOptionsPosition[     45241,       1236]
+NotebookOutlinePosition[     45576,       1251]
+CellTagsIndexPosition[     45533,       1248]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[StyleBox["22.S09 \[Dash] Molten Salt Brick Heat Transfer Model",
+ 
+ FontColor->GrayLevel[0]]], "Section",
+ CellChangeTimes->{{3.855581575950121*^9, 
+  3.855581586111829*^9}},ExpressionUUID->"63aa0b91-b47c-4b8c-961c-\
+2ca193bcca97"],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+2) basic heat loss from brick (heat flow in Q)
+using 240,000 KJ/day of coal rn
+energy density of molten salt brick
+how long would the salt take to solidify?
+
+3) volume of molten salt necessary given heat loss (heat flow Q is in W) \
+(heat capacity up to melting temperature (see p.803), then some way of \
+modelling phase change?, then heat capacity once solidified)
+4) need model for temperature within the ger at a given the temperature of \
+the brick (this should somehow incorporate phase change?) (George\
+\[CloseCurlyQuote]s pset might be a good reference)\
+\>", "Section",
+ CellChangeTimes->{{3.857411499645749*^9, 3.857411596269285*^9}, 
+   3.857411645210956*^9, {3.857411907263085*^9, 3.85741196276047*^9}, {
+   3.857412886362908*^9, 3.857412925382944*^9}, {3.857413350030243*^9, 
+   3.85741337388103*^9}, {3.8574139560866632`*^9, 3.85741396012397*^9}, {
+   3.857418016123021*^9, 3.857418019010673*^9}, {3.8574997745208673`*^9, 
+   3.857499800176758*^9}, {3.857499897887907*^9, 3.857499915750494*^9}, {
+   3.857499952848659*^9, 3.857499957213759*^9}, {3.8575004192388687`*^9, 
+   3.85750042982384*^9}, 3.857500583704184*^9, {3.857504157954907*^9, 
+   3.857504159565549*^9}},ExpressionUUID->"2eadef17-92ba-4cfe-9817-\
+900656f7cbd2"],
+
+Cell[TextData[StyleBox["Setting initial variables for our brick in tent \
+system. ",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.855581689506542*^9, 3.8555817168782673`*^9}, {
+   3.8556064232080517`*^9, 3.855606489949139*^9}, {3.855606626597623*^9, 
+   3.855606637136187*^9}, 
+   3.855606718580978*^9},ExpressionUUID->"56c7dbd2-baf0-4695-af13-\
+65b4411fd71b"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[StyleBox["Assumptions:\n- ger and the molten salt brick are \
+shaped like cubes\n- all dimensions are in SI units\n- no forced convection\n\
+- resistance in stainless steel around molten brick is negligible \n-salt is \
+mix of NaNO3 & KNO3", "Text",
+ FontColor->GrayLevel[0]]], "Subsubsection",
+ CellChangeTimes->{{3.855606743912094*^9, 3.855606746068297*^9}, {
+  3.855676447989312*^9, 3.855676503126327*^9}, {3.85567682452796*^9, 
+  3.855676849783885*^9}, {3.857412666874015*^9, 
+  3.857412683118422*^9}},ExpressionUUID->"8a5fc08d-8e56-4ad2-beec-\
+0265275340be"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"240000", "/", 
+     RowBox[{"(", 
+      RowBox[{"1840", "*", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"2660", "*", 
+          RowBox[{"(", 
+           RowBox[{"773", "-", "495"}], ")"}]}], "+", "120", "+", 
+         RowBox[{"2660", "*", 
+          RowBox[{"(", 
+           RowBox[{"495", "-", "300"}], ")"}]}]}], ")"}]}], ")"}]}], ")"}], 
+   "*", 
+   RowBox[{"10", "^", "6"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8576367012373457`*^9, 3.857636832632118*^9}, {
+  3.8576370061360283`*^9, 3.857637006362781*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"ce54a5e5-7c8b-4211-b067-825e88632a3c"],
+
+Cell[BoxData["103.6595268288132`"], "Output",
+ CellChangeTimes->{{3.857636754128167*^9, 3.8576367963796463`*^9}, 
+   3.8576368336528263`*^9, 3.8576370072959747`*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"c61733eb-96ea-4a01-9ed7-cea26dfdf0c4"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"gerw", " ", "=", " ", "5"}], ";"}], " ", 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"gerl", " ", "=", " ", "5"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"gerh", " ", "=", " ", "5"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"brickw", " ", "=", " ", "0.1"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"brickl", " ", "=", " ", "0.1"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"brickh", "=", " ", "0.1"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"need", " ", "to", " ", "update"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"hair", " ", "=", " ", "10"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ksalt", " ", "=", " ", "1"}], ";", " ", 
+  RowBox[{"(*", 
+   RowBox[{
+   "need", " ", "to", " ", "look", " ", "up", " ", "actual", " ", "value"}], 
+   "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"cpmoltensalt", " ", "=", " ", "1500"}], ";", " ", 
+  RowBox[{"(*", 
+   RowBox[{"does", " ", "cp", " ", "differ", " ", "for", " ", "solid", " ", 
+    RowBox[{"salt", "?"}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"densitysalt", " ", "=", " ", "2200"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Tmsalt", " ", "=", " ", "494"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"hfsalt", " ", "=", " ", "1"}], ";", " ", 
+   RowBox[{"(*", 
+    RowBox[{"need", " ", "actual", " ", "value"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Tibrick", " ", "=", " ", "873"}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"Tbrick", " ", "=", " ", "300"}], ";"}], " ", 
+   RowBox[{"(*", 
+    RowBox[{
+    "make", " ", "this", " ", "a", " ", "function", " ", "of", " ", "time"}], 
+    "*)"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Titent", " ", "=", " ", "290"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Sigma]", " ", "=", " ", 
+   RowBox[{"5.67", "*", 
+    RowBox[{"10", "^", 
+     RowBox[{"(", 
+      RowBox[{"-", "8"}], ")"}]}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Epsilon]steel", " ", "=", " ", "0.7"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"krockwool", " ", "=", " ", ".035"}], ";", " ", 
+  RowBox[{"(*", 
+   RowBox[{"verify", " ", "this"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"\[Epsilon]insulation", " ", "=", " ", "0.95"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"this", " ", "is", " ", "an", " ", "educated", " ", "guess"}], 
+   "*)"}]}]}], "Input",
+ CellChangeTimes->{{3.8556064944232197`*^9, 3.8556065135718*^9}, {
+  3.8556066169484653`*^9, 3.855606701964937*^9}, {3.855676512420435*^9, 
+  3.8556765126007547`*^9}, {3.8574126638357277`*^9, 3.857412713546466*^9}, {
+  3.857412774878519*^9, 3.857412783365285*^9}, {3.857412813408842*^9, 
+  3.857412826383624*^9}, {3.857413969153915*^9, 3.857413969652355*^9}, {
+  3.8574140876049337`*^9, 3.8574140890754747`*^9}, {3.857414664891034*^9, 
+  3.857414692379548*^9}, {3.8574147310778933`*^9, 3.857414731424889*^9}, {
+  3.8574151224554243`*^9, 3.857415183002427*^9}, {3.8574155002784224`*^9, 
+  3.857415513037269*^9}, {3.857415856778181*^9, 3.857415886666759*^9}, {
+  3.857415997907044*^9, 3.8574160322423487`*^9}, {3.857416498816407*^9, 
+  3.8574165011032753`*^9}, {3.858104770656069*^9, 3.8581047708921633`*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"a5adc745-1f87-424b-bda8-18b3e154d184"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[StyleBox["Which forms of heat transfer dominate? Checking at \
+lowest \[CapitalDelta]T because heat flux via radiation tends to dominate at \
+higher temperatures",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.855675843411943*^9, 3.85567584869786*^9}, {
+  3.855675982179823*^9, 3.8556760145094347`*^9}, {3.857414826802548*^9, 
+  3.857414833557468*^9}, {3.857415031098659*^9, 
+  3.857415103789301*^9}},ExpressionUUID->"96c1a67a-d216-4f0b-95a5-\
+563f5925f6ab"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Rradiative", "[", 
+   RowBox[{
+   "\[Sigma]_", ",", "\[Epsilon]_", ",", "Tsurf_", ",", " ", "Tsource_"}], 
+   "]"}], " ", ":=", " ", 
+  RowBox[{"1", "/", 
+   RowBox[{"(", 
+    RowBox[{"\[Sigma]", " ", "\[Epsilon]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"Tsurf", "^", "2"}], "+", 
+       RowBox[{"Tsource", "^", "2"}]}], ")"}], 
+     RowBox[{"(", 
+      RowBox[{"Tsurf", "+", "Tsource"}], ")"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.8556760396685677`*^9, 3.855676177180689*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"3c0a221b-d3aa-440b-8da4-7f018685f72f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Rconvective", "[", "h_", "]"}], " ", ":=", " ", 
+  RowBox[{"1", "/", "h"}]}]], "Input",
+ CellChangeTimes->{{3.8556761810670567`*^9, 3.855676192974122*^9}},
+ CellLabel->"In[18]:=",ExpressionUUID->"e95a4835-632d-430d-94ea-085b31f6b38c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Rradbrick", " ", "=", " ", 
+  RowBox[{"Rradiative", "[", 
+   RowBox[{
+   "\[Sigma]", ",", "\[Epsilon]steel", ",", " ", "Tbrick", ",", "Titent"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"Rconvbrick", " ", "=", " ", 
+  RowBox[{"Rconvective", "[", "hair", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.855676219239209*^9, 3.855676273098238*^9}, {
+   3.855676715004154*^9, 3.855676715840114*^9}, {3.8574147019154367`*^9, 
+   3.857414706121293*^9}, {3.8574147662813168`*^9, 3.8574147687425213`*^9}, 
+   3.85741519131979*^9},
+ CellLabel->"In[81]:=",ExpressionUUID->"d4883607-35e0-4bea-aa4f-c8042200d0d5"],
+
+Cell[BoxData["0.245283377860974`"], "Output",
+ CellChangeTimes->{{3.8574147027181463`*^9, 3.8574147332194967`*^9}, {
+   3.857414766604165*^9, 3.857414769097842*^9}, 3.857415192519589*^9},
+ CellLabel->"Out[81]=",ExpressionUUID->"eec0d09b-7e68-4543-8a74-fc4a6db31141"],
+
+Cell[BoxData[
+ FractionBox["1", "10"]], "Output",
+ CellChangeTimes->{{3.8574147027181463`*^9, 3.8574147332194967`*^9}, {
+   3.857414766604165*^9, 3.857414769097842*^9}, 3.857415192520933*^9},
+ CellLabel->"Out[82]=",ExpressionUUID->"a34d4a82-ae1d-4cbd-86bf-014fd53740c9"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[TextData[StyleBox["Even at lowest \[CapitalDelta]T, radiative and \
+convective resistance terms are within an order of magnitude of each other. \
+Therefore, both radiation and convection must be considered in our heat \
+transfer model.",
+ FontSize->16,
+ FontColor->GrayLevel[0]]], "Subsubsection",
+ CellChangeTimes->{{3.855676305667779*^9, 3.8556763746856337`*^9}, 
+   3.857411468655025*^9, {3.857415022619855*^9, 3.8574150249993963`*^9}, {
+   3.8574151058723307`*^9, 
+   3.857415111564815*^9}},ExpressionUUID->"a339a97c-cc49-4dc5-af28-\
+8e8e8421662b"],
+
+Cell[TextData[StyleBox["Insulation around the molten brick",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.855675843411943*^9, 3.85567584869786*^9}, {
+  3.855675982179823*^9, 3.8556760145094347`*^9}, {3.857414826802548*^9, 
+  3.857414861091113*^9}},ExpressionUUID->"c1bfed6a-ac71-4cbd-af96-\
+c80a3e441cee"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["Begin by assuming steady state\nHeat balance at interface between \
+insulation and air: ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["q", "convection"], "+", 
+    SubscriptBox["q", "radiation"]}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "ff33a56f-f846-48a2-889f-9d63f9868656"],
+ StyleBox[" = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{" ", 
+    SubscriptBox["q", "conduction"]}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "6af6de0d-a6d4-44f4-9ae7-77f1a87376da"],
+ "\n",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{" ", 
+    RowBox[{
+     SubscriptBox["R", "conduction"], "=", " "}]}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "33a10c11-a011-4ba9-bf62-de8d423c250d"],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["L", "k"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"8922d587-7ed6-40cd-b77c-95287f87f36a"],
+ "\n",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"h", " ", 
+    RowBox[{"(", 
+     SubscriptBox["T", "surface"]}]}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"fd5f36b2-14ae-45c3-bbb7-1c6b0032abf1"],
+ StyleBox[" - ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "fluid"], ")"}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"30e57c5d-3a4a-45b2-999b-a827953d20cf"],
+ StyleBox[" + \[Epsilon] \[Sigma] ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SuperscriptBox[
+     SubscriptBox["T", "surface"], "4"]}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"a80dc114-64c2-4919-bb43-2b10eef1a7c1"],
+ StyleBox["- ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    SubscriptBox["T", "source"], "4"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"17876231-ac19-4894-a610-0f9d421a80f0"],
+ StyleBox[") = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[CapitalDelta]T", "R"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"21b09960-9e9d-42b4-b487-a6386dee425e"]
+}], "Subsubsection",
+ CellChangeTimes->{{3.855676804302116*^9, 3.85567682089958*^9}, {
+   3.855676854120194*^9, 3.8556768563016033`*^9}, {3.855676899868711*^9, 
+   3.855676983066092*^9}, {3.8556770413510942`*^9, 3.855677093056988*^9}, {
+   3.855677279404768*^9, 3.855677596046483*^9}, {3.855677681807705*^9, 
+   3.855677682426797*^9}, 3.855677825751624*^9, {3.857414885675241*^9, 
+   3.857415005649691*^9}, {3.857415212821319*^9, 3.857415212821484*^9}, {
+   3.857415272824617*^9, 3.857415342337635*^9}, {3.857415491943997*^9, 
+   3.857415492185451*^9}},
+ TextAlignment->Center,ExpressionUUID->"032228bd-e22e-47b1-96b2-9745e1e357a7"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"Rconductive", "[", 
+    RowBox[{"L_", ",", "k_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"L", "/", "k"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"qradiative", "[", 
+    RowBox[{"\[Epsilon]_", ",", "Tsurface_", ",", "Tsource_"}], "]"}], ":=", 
+   RowBox[{"\[Epsilon]", " ", "\[Sigma]", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"Tsurface", "^", "4"}], "-", 
+      RowBox[{"Tsource", "^", "4"}]}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"qconvective", "[", 
+    RowBox[{"h_", ",", "Tsurface_", ",", "Tfluid_"}], "]"}], ":=", " ", 
+   RowBox[{"h", " ", 
+    RowBox[{"(", 
+     RowBox[{"Tsurface", "-", "Tfluid"}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"qconductive", "[", 
+    RowBox[{"R_", ",", "Tinitial_", ",", "Tfinal_"}], "]"}], ":=", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"Tfinal", "-", "Tinitial"}], ")"}], "/", "R"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.857415538231344*^9, 3.857415699387723*^9}},
+ CellLabel->"In[83]:=",ExpressionUUID->"d6a29f0c-7e16-4f7b-b318-d8af566f44a2"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Rcondinsul", " ", "=", " ", 
+   RowBox[{"Rconductive", "[", 
+    RowBox[{"L", ",", "krockwool"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"qradinsul", " ", "=", 
+   RowBox[{"qradiative", "[", 
+    RowBox[{"\[Epsilon]insulation", ",", "Tsurf", ",", "Titent"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"qconvinsul", " ", "=", " ", 
+   RowBox[{"qconvective", "[", 
+    RowBox[{"hair", ",", "Tsurf", ",", "Titent"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"qcondinsul", " ", "=", " ", 
+   RowBox[{"qconductive", "[", 
+    RowBox[{"Rcondinsul", ",", "Tsurf", ",", "Tbricktime"}], "]"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.8574157175321503`*^9, 3.85741573252024*^9}, {
+  3.8574158939454937`*^9, 3.85741599583257*^9}, {3.857416049137649*^9, 
+  3.8574160947012243`*^9}, {3.85741627066565*^9, 3.8574162994485826`*^9}, {
+  3.8574164493539352`*^9, 3.857416449581764*^9}},
+ CellLabel->
+  "In[147]:=",ExpressionUUID->"c110acd6-c5bb-47b0-b316-46e16674e297"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"qconvinsul", "+", "qradinsul"}], "==", "qcondinsul"}], ",", 
+   "Tbricktime"}], "]"}]], "Input",
+ CellChangeTimes->{{3.8574165965128736`*^9, 3.8574166190935183`*^9}, {
+  3.857416966642544*^9, 3.857416975702606*^9}, {3.857417024655335*^9, 
+  3.857417030554748*^9}, {3.857417125709745*^9, 3.85741712724819*^9}},
+ CellLabel->
+  "In[180]:=",ExpressionUUID->"214d1ba6-b700-430c-8003-2a166e9e0ba8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"Tbricktime", "\[Rule]", 
+    RowBox[{
+     RowBox[{"-", "28.57142857142857`"}], " ", "L", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "10.`"}], " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "290.`"}], "+", "Tsurf"}], ")"}]}], "-", 
+       FractionBox[
+        RowBox[{"0.035`", " ", "Tsurf"}], "L"], "-", 
+       RowBox[{"5.386499999999999`*^-8", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "7.07281`*^9"}], "+", 
+          SuperscriptBox["Tsurf", "4"]}], ")"}]}]}], ")"}]}]}], "}"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{3.8574166195510273`*^9, 3.857416976255435*^9, 
+  3.857417030823948*^9, 3.857417127644545*^9},
+ CellLabel->
+  "Out[180]=",ExpressionUUID->"6a6dd829-b06e-486a-8c1c-4ff1cf996d84"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"bricktemp", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"-", "28.57142857142857`"}], " ", "L", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "10.`"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "290.`"}], "+", "Tsurf"}], ")"}]}], "-", 
+      FractionBox[
+       RowBox[{"0.035`", " ", "Tsurf"}], "L"], "-", 
+      RowBox[{"5.386499999999999`*^-8", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "7.07281`*^9"}], "+", 
+         SuperscriptBox["Tsurf", "4"]}], ")"}]}]}], ")"}]}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.857416630298682*^9, 3.857416645132914*^9}, {
+  3.8574167034957457`*^9, 3.8574167048193502`*^9}, {3.857416985518944*^9, 
+  3.8574170081229467`*^9}, {3.857417039180072*^9, 3.857417041642703*^9}, {
+  3.857417134721756*^9, 3.857417135381503*^9}},
+ CellLabel->
+  "In[181]:=",ExpressionUUID->"9de61f29-92c5-4762-a038-bd1c471573df"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[StyleBox["Assuming 50\[Degree]C as a comfortable surface \
+temperature on the outside of the insulation, what thickness of insulation is \
+needed at various molten salt brick temperatures?",
+ FontSize->16,
+ FontColor->GrayLevel[0]]], "Subsubsection",
+ CellChangeTimes->{{3.857416523164679*^9, 3.857416586504299*^9}, {
+  3.857417018007702*^9, 3.8574170194000053`*^9}, {3.85741708602286*^9, 
+  3.8574171053267603`*^9}, {3.8574171462317963`*^9, 3.857417154007001*^9}, {
+  3.857417640940127*^9, 
+  3.8574176453820543`*^9}},ExpressionUUID->"1984a5ec-9507-4943-86eb-\
+1e957d981ac8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Plot", "[", " ", 
+  RowBox[{
+   RowBox[{"bricktemp", " ", "/.", " ", 
+    RowBox[{"{", 
+     RowBox[{"Tsurf", " ", "\[Rule]", " ", "300"}], "}"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"L", ",", "0", ",", "0.15"}], "}"}], ",", 
+   RowBox[{"ImageSize", "\[Rule]", "Large"}], ",", 
+   RowBox[{"PlotTheme", " ", "\[Rule]", " ", "\"\<Scientific\>\""}], ",", 
+   RowBox[{"FrameLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Style", "[", 
+       RowBox[{"\"\<Insulation thickness (m)\>\"", ",", "14", ",", "Black"}], 
+       "]"}], ",", 
+      RowBox[{"Style", "[", 
+       RowBox[{"\"\<Temperature of brick (K)\>\"", ",", "14", ",", "Black"}], 
+       "]"}]}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", " ", "\[Rule]", " ", 
+    RowBox[{"Style", "[", 
+     RowBox[{
+     "\"\<Insulation thickness needed to maintain surface temperature of 27\
+\[Degree]C\>\"", ",", "16", ",", "Black", ",", "Bold"}], "]"}]}], ",", 
+   RowBox[{"PlotRange", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "873"}], "}"}]}]}], " ", "]"}]], "Input",
+ CellChangeTimes->{{3.857416908123769*^9, 3.857416945492982*^9}, {
+  3.857417047390544*^9, 3.857417076087742*^9}, {3.85741711104661*^9, 
+  3.8574171182149277`*^9}, {3.857417155450911*^9, 3.857417173066558*^9}, {
+  3.8574173446021214`*^9, 3.8574173979120197`*^9}, {3.857417429118947*^9, 
+  3.8574175429516993`*^9}, {3.857417657317758*^9, 3.857417662498625*^9}, {
+  3.8574177129918013`*^9, 3.857417722532827*^9}, {3.857417824283098*^9, 
+  3.857417827766821*^9}, {3.857417953035852*^9, 3.85741796655068*^9}, {
+  3.8574180760033607`*^9, 3.8574180875968122`*^9}, {3.857418125602994*^9, 
+  3.857418185004114*^9}, {3.857418218838572*^9, 3.857418256896654*^9}, {
+  3.857418507825596*^9, 3.85741854221206*^9}, {3.857418609886578*^9, 
+  3.857418658739071*^9}, {3.8574186988949966`*^9, 3.857418840396998*^9}},
+ CellLabel->
+  "In[224]:=",ExpressionUUID->"489176b4-9d63-45dd-86ef-966c571b9676"],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    TagBox[
+     {RGBColor[0.9, 0.36, 0.054], AbsoluteThickness[1.6], Opacity[1.], 
+      CapForm["Butt"], LineBox[CompressedData["
+1:eJwBMQPO/CFib1JlAgAAADIAAAACAAAA898WL7RLKj624D4OAMByQJ2DHyAM
+Hwg/4YLnU0TDckBvJbeI1x4YPw8lkJmIxnJAWPYCPb0eKD9oaeEkEc1yQM3e
+KBewHjg/GvKDOyLackAH0zuEqR5IP34DyWhE9HJAJE3FOqYeWD9HJlPDiChz
+QDMKCpakHmg/1mtneBGRc0Cc0fQFVCJ5P2QJIdG4c3RA1GW0asSrgj8zhvoN
+W0d1QC0uUeS3p4g/oUjEh9YWdkD2KhJ/gyWPP38dH/Dn93ZAQZ8KUjSakj+b
+0Zk89Ml3QEBDHvWS4pU/JZild5ateEDoTCMhnhuZP1Ckoe8RjXlA8mFJEjYd
+nD+/j71LiF16QDSRARS6X58/lo1qlpQ/e0DtZW1tZTWhP65qN8WbEnxAFLZS
+FUSzoj9qjfQwfOF8QFgTgcWYUaQ/ksJCi/LBfUBN9j/YM9SlP/vWsMljk35A
+XuZH80R3pz/N/a/2anZ/QESJyFKsEqk/IrVPsKUqgEDbsdkUWpKqP/9aV1eT
+koBAjucz330yrD8Qiqf1SwOBQPKiHgzotq0/wqgHBoJsgUBya1JByFuvP6pQ
+sA2D3oFAY3N/XX98sD9kG9GzcE6CQOXzncs9PbE/vNUBzNu2gkD1+uA9Nw6y
+P0wZe9sRKINA3kRs4VPRsj96TARdxZGDQDHoM6ebkLM/e6IFfWX5g0ASEiBx
+HmC0P7KBT5TQaYRAzH5UbMQhtT+IUKkdudKEQBRyrWul87U/lqhLnmxEhUDG
+vkKNscG2P3MjZr0MtIVAUU4g4OCBtz/zjZBOKhyGQGpkIjdLUrg/qYED1xKN
+hkBbvWy/2BS5P/xkhtF49oZAt2/zaZHTuT8ia4Fqy12HQKGonhiForo/f/rE
++ujNh0BjJJL4m2O7P3p5GP2DNohAsyaq3O00vD+tgbT26aeIQNxrCvJi+Lw/
+fnlgYs0RiUBvCqcpA7i9PyOUhGydeYlAkC9oZd6Hvj/8N/FtOOqJQIqXcdLc
+Sb8/dstt4VBTikAKw88hCw7APyfoMkw0xYpABOeEaz11wD+qJ3BVBDWLQNkW
+kZrChsA/AAAAAABIi0CIcXMi
+       "]]},
+     Annotation[#, "Charting`Private`Tag$67958#1"]& ]}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{False, False},
+  AxesLabel->{None, None},
+  AxesOrigin->{0, 0},
+  DisplayFunction->Identity,
+  Frame->{{True, True}, {True, True}},
+  FrameLabel->{{
+     FormBox[
+      StyleBox["\"Temperature of brick (K)\"", 14, 
+       GrayLevel[0], StripOnInput -> False], TraditionalForm], None}, {
+     FormBox[
+      StyleBox["\"Insulation thickness (m)\"", 14, 
+       GrayLevel[0], StripOnInput -> False], TraditionalForm], None}},
+  FrameStyle->Automatic,
+  FrameTicks->FrontEndValueCache[{{Automatic, 
+      Charting`ScaledFrameTicks[{Identity, Identity}]}, {Automatic, 
+      Charting`ScaledFrameTicks[{Identity, Identity}]}}, {{Automatic, {{0., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {200., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {400., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {600., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {800., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {50., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {100., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {150., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {250., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {300., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {350., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {450., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {500., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {550., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {650., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {700., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {750., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {850., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {900., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {950., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {1000., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}}}, {Automatic, {{0., 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.05, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.1, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.15, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.01, 0.}, {
+         AbsoluteThickness[0.1]}}, {-0.05, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {-0.04, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {-0.03, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {-0.02, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {-0.01, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.01, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.02, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.03, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.04, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.06, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.07, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.08, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.09, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.11, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.12, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.13, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.14, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.16, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.17, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.18, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.19, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}, {0.2, 
+        FormBox[
+         TemplateBox[{0., 0.}, "Spacer2"], TraditionalForm], {0.005, 0.}, {
+         AbsoluteThickness[0.1]}}}}}],
+  GridLines->{{0}, {0}},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  ImageSize->Large,
+  LabelStyle->{FontFamily -> "Times"},
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None, 
+    "CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& )}},
+  PlotLabel->FormBox[
+    StyleBox[
+    "\"Insulation thickness needed to maintain surface temperature of 27\
+\[Degree]C\"", 16, 
+     GrayLevel[0], Bold, StripOnInput -> False], TraditionalForm],
+  PlotRange->{{0., 0.1499999969387755}, {0, 873}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {0, 0}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{{3.857417470841667*^9, 3.857417490362591*^9}, 
+   3.857417545284618*^9, {3.857417664738117*^9, 3.857417667577331*^9}, 
+   3.857417722883039*^9, {3.857417825190288*^9, 3.8574178281038322`*^9}, 
+   3.857417864867154*^9, {3.857417956198784*^9, 3.8574179670223923`*^9}, 
+   3.8574180881559687`*^9, {3.857418128294091*^9, 3.857418185422531*^9}, 
+   3.8574182232602863`*^9, 3.8574182573928823`*^9, {3.857418514293118*^9, 
+   3.8574185230972147`*^9}, {3.857418622918181*^9, 3.857418647541617*^9}, {
+   3.857418724655678*^9, 3.857418773317346*^9}, 3.857418808413711*^9, 
+   3.857418841240552*^9},
+ CellLabel->
+  "Out[224]=",ExpressionUUID->"6d6ee7f6-2a7c-4edd-84cf-95293cc464b1"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[TextData[StyleBox["Heat loss from brick.",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.857418346147997*^9, 
+  3.85741841039355*^9}},ExpressionUUID->"7c69779f-e814-4306-b5a1-\
+fd7956940e23"],
+
+Cell[TextData[StyleBox["Volume of molten salt needed given heat loss.",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.857418416805167*^9, 
+  3.857418426570608*^9}},ExpressionUUID->"c32edd1c-2bae-40ee-b56a-\
+52fa8f9b6379"],
+
+Cell[TextData[StyleBox["Temperature profile for brick surface temperature \
+over time. Neglecting phase transition for now.",
+ FontColor->RGBColor[0, 0, 1]]], "Subsubsection",
+ CellChangeTimes->{{3.855676694399065*^9, 3.85567670239122*^9}, {
+  3.855676745074141*^9, 3.855676760460297*^9}, {3.855677517856842*^9, 
+  3.855677528584993*^9}, {3.857418378019265*^9, 
+  3.857418379508472*^9}},ExpressionUUID->"957361e0-21a9-49e8-8c69-\
+18cf67e8e016"],
+
+Cell[TextData[StyleBox["Set up heat balance.",
+ FontSize->16,
+ FontColor->GrayLevel[0]]], "Subsubsection",
+ CellChangeTimes->{{3.855677737690012*^9, 3.855677748603544*^9}, {
+  3.855677859345083*^9, 
+  3.855677865800832*^9}},ExpressionUUID->"bc8a4de4-9f35-4d16-b0d5-\
+0ab2e5cda3fe"],
+
+Cell[TextData[{
+ StyleBox["Heat balance: ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Q", "accumulated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "6cc9e9df-f8d1-4e65-a6c9-7b9f53ac9929"],
+ StyleBox[" = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Q", "in"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "09893b76-449b-4fb3-926d-76c8b2da19a7"],
+ StyleBox[" + ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Q", "out"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "097cc432-2ca1-4b49-a4dc-13eb26a5a294"],
+ StyleBox[" + ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Q", "generated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "2bae844e-ba41-4a4b-9466-37fe98e868a0"],
+ StyleBox["\nCross-sectional area remains constant: ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "accumulated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "3e6909d5-7dec-4a63-94be-9a15674f3d5b"],
+ StyleBox[" = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "in"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "3ff8040e-09e8-4c14-8266-00dd217a80f6"],
+ StyleBox[" + ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "out"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "bf9bba0c-276f-4e23-bbea-7eb07cbe678f"],
+ StyleBox[" + ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "generated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "762a6436-af9e-47bb-b62d-e54abebf15ff"],
+ StyleBox["\n",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "accumulated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "db2e4abc-ca10-4150-804d-c5a053b92fac"],
+ StyleBox[" = \[Rho] ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["c", "p"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "3db1ae5c-fec6-4c73-9cb1-0885fe69f6b1"],
+ StyleBox[" ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[Delta]T", "\[Delta]t"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "e5b2a618-f903-4c59-b2e7-5686e9546ffe"],
+ StyleBox["\n",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "in"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "a08d61c3-bf4b-4af5-8ad9-c60b82e4ab1f"],
+ StyleBox[" = - k\[Del]T\n",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "out"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "b2a1f69c-d151-494e-86af-fb30d9f35b44"],
+ StyleBox[" = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "convective"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "bd197955-c5c2-42b7-8704-73e3762d6754"],
+ StyleBox[" + ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "radiative"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "06626c2a-e436-487f-b05d-8ffa43b6912c"],
+ StyleBox[" = ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"h", " ", 
+    RowBox[{"(", 
+     SubscriptBox["T", "surface"]}]}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "dc461cbc-f18b-4fb0-9d04-a8b1372bbfe3"],
+ StyleBox[" - ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "fluid"], ")"}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "ad32c1a0-a0d5-4eb5-bb8c-4b44021d3acd"],
+ StyleBox[" + \[Epsilon] \[Sigma] ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SuperscriptBox[
+     SubscriptBox["T", "surface"], "4"]}], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "00da815b-e74d-4e8e-acc2-1833510d7c9d"],
+ StyleBox["- ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    SubscriptBox["T", "source"], "4"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "adb0dee4-7c8a-4d3c-96a8-a98359219687"],
+ StyleBox[")\n",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "generated"], TraditionalForm]],
+  FontSize->16,
+  FontColor->GrayLevel[0.5],ExpressionUUID->
+  "abfc2847-61b1-4317-bec1-df579b238cde"],
+ StyleBox[" = 0\n\[Rho] ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["c", "p"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"28dc6f4c-1701-42ec-a6db-1b90c1736492"],
+ StyleBox[" ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[Delta]T", "\[Delta]t"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"d6565fe1-3d54-4b32-b8f4-c6f240de2a49"],
+ StyleBox[" = -k(",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[Delta]T", "\[Delta]x"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"aefe2fb3-ef9b-4249-a048-a8b287fa35a9"],
+ StyleBox["+",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[Delta]T", "\[Delta]y"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"258dff13-115d-449f-9db4-d25e53e24ad3"],
+ StyleBox["+",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   FractionBox["\[Delta]T", "\[Delta]z"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"4fa3a9e4-d7c6-49cf-9fd6-ccfbd2760f50"],
+ StyleBox[") - (",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"h", " ", 
+    RowBox[{"(", 
+     SubscriptBox["T", "surface"]}]}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"f1884111-fc05-4b48-a39b-0128fb947c0c"],
+ StyleBox[" - ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "fluid"], ")"}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"643e0c85-931b-4fed-af15-3bca7bd78359"],
+ StyleBox[" + \[Epsilon] \[Sigma] ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SuperscriptBox[
+     SubscriptBox["T", "surface"], "4"]}], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"8ac7f0ba-dcbb-40a6-a550-623acd5d8134"],
+ StyleBox["- ",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]],
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    SubscriptBox["T", "source"], "4"], TraditionalForm]],
+  FontSize->16,
+  FontWeight->"Plain",
+  FontColor->GrayLevel[0.5],
+  Background->None,ExpressionUUID->"e5172c85-3079-4f93-bb2c-41f442d4d641"],
+ StyleBox["))",
+  FontSize->16,
+  FontColor->GrayLevel[0.5]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.855676804302116*^9, 3.85567682089958*^9}, {
+   3.855676854120194*^9, 3.8556768563016033`*^9}, {3.855676899868711*^9, 
+   3.855676983066092*^9}, {3.8556770413510942`*^9, 3.855677093056988*^9}, {
+   3.855677279404768*^9, 3.855677596046483*^9}, {3.855677681807705*^9, 
+   3.855677682426797*^9}, 3.855677825751624*^9},
+ TextAlignment->Center,ExpressionUUID->"fdbab566-65f3-4c2e-be53-21a600057755"],
+
+Cell["Set initial and boundary conditions.", "Subsubsection",
+ CellChangeTimes->{{3.8556778177289133`*^9, 3.8556778358254766`*^9}, {
+   3.855678201970961*^9, 3.855678204038929*^9}, 
+   3.85568859029792*^9},ExpressionUUID->"6aeebd22-bece-411c-8a79-\
+fa925b0f1da3"],
+
+Cell[TextData[{
+ "Insulation calculation\n@x=L, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["q", "cond"], "=", 
+    SubscriptBox["q", 
+     RowBox[{"conv", "\[IndentingNewLine]"}]]}], TraditionalForm]],
+  ExpressionUUID->"dd4e6661-b3a4-4546-928a-64c4d893475c"],
+ " "
+}], "Subsubsection",
+ CellChangeTimes->{
+  3.855688615920393*^9, {3.855689274372169*^9, 
+   3.855689327651847*^9}},ExpressionUUID->"2d17f10f-47d7-4025-9943-\
+373f7cadfee6"],
+
+Cell[CellGroupData[{
+
+Cell["s = 2 sqrt[(k/rho*cp) t] 11in", "Subsubsection",
+ CellChangeTimes->{{3.8581046088854847`*^9, 3.858104630167618*^9}, {
+  3.858104682366561*^9, 
+  3.858104683040236*^9}},ExpressionUUID->"68d29a07-502e-4f4c-8994-\
+126ccd9445b8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Solve", "[", 
+   RowBox[{
+    RowBox[{"ssalt", " ", "\[Equal]", " ", 
+     RowBox[{"2", " ", 
+      RowBox[{"Sqrt", "[", 
+       RowBox[{
+        RowBox[{"ksalt", "/", 
+         RowBox[{"(", 
+          RowBox[{"densitysalt", "*", "cpmoltensalt"}], ")"}]}], " ", "t"}], 
+       "]"}]}]}], ",", "t"}], "]"}], "/.", 
+  RowBox[{"ssalt", "\[Rule]", " ", ".0635"}]}]], "Input",
+ CellChangeTimes->{{3.85810471034435*^9, 3.858104721393944*^9}, {
+  3.858104762508683*^9, 3.8581048078148193`*^9}, {3.858104856610979*^9, 
+  3.8581048902753553`*^9}, {3.8581049590974417`*^9, 3.858104960372724*^9}, {
+  3.8581049920973053`*^9, 3.858104994213114*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"30c8d6ec-31d1-46bd-8ac0-cd7142f3a35d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"t", "\[Rule]", "3326.6062500000003`"}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{{3.858104862046536*^9, 3.858104892532133*^9}, 
+   3.8581049289432583`*^9, 3.8581049607596273`*^9, 3.858104994532696*^9},
+ CellLabel->"Out[26]=",ExpressionUUID->"48312c2d-1b73-4f77-8d6c-9715606245f5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"t", "/.", "\[VeryThinSpace]", 
+  RowBox[{"{", 
+   RowBox[{"{", 
+    RowBox[{"t", "\[Rule]", "3326.6062500000003`"}], "}"}], "}"}]}]], "Input",\
+
+ NumberMarks->False,
+ CellLabel->"In[27]:=",ExpressionUUID->"906701cd-dd87-4a7b-8ab6-50ffd52f6195"],
+
+Cell[BoxData[
+ RowBox[{"{", "3326.6062500000003`", "}"}]], "Output",
+ CellChangeTimes->{3.858105000690605*^9},
+ CellLabel->"Out[27]=",ExpressionUUID->"a64113ac-8d6d-470a-b470-246a01ebf173"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"3326.", "/", "3600."}]], "Input",
+ CellChangeTimes->{{3.8581049004988937`*^9, 3.858104901776602*^9}, {
+  3.85810493256709*^9, 3.8581049675471573`*^9}, {3.858105003784993*^9, 
+  3.858105004124302*^9}, {3.8581050621178093`*^9, 3.858105062430286*^9}},
+ CellLabel->"In[29]:=",ExpressionUUID->"9935921c-d415-4ef5-a776-51a79557274e"],
+
+Cell[BoxData["0.9238888888888889`"], "Output",
+ CellChangeTimes->{{3.858104935007617*^9, 3.858104941848323*^9}, {
+   3.8581049761526337`*^9, 3.858105004647604*^9}, 3.8581050627780857`*^9},
+ CellLabel->"Out[29]=",ExpressionUUID->"df0e5b48-1465-4707-bfc1-8d8ec0523d79"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{705, 795},
+WindowMargins->{{7, Automatic}, {1, Automatic}},
+FrontEndVersion->"12.0 for Mac OS X x86 (64-bit) (April 8, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 245, 5, 67, "Section",ExpressionUUID->"63aa0b91-b47c-4b8c-961c-2ca193bcca97"],
+Cell[CellGroupData[{
+Cell[828, 29, 1250, 22, 395, "Section",ExpressionUUID->"2eadef17-92ba-4cfe-9817-900656f7cbd2"],
+Cell[2081, 53, 387, 7, 45, "Subsubsection",ExpressionUUID->"56c7dbd2-baf0-4695-af13-65b4411fd71b"],
+Cell[CellGroupData[{
+Cell[2493, 64, 577, 9, 147, "Subsubsection",ExpressionUUID->"8a5fc08d-8e56-4ad2-beec-0265275340be"],
+Cell[CellGroupData[{
+Cell[3095, 77, 682, 19, 30, "Input",ExpressionUUID->"ce54a5e5-7c8b-4211-b067-825e88632a3c"],
+Cell[3780, 98, 243, 3, 34, "Output",ExpressionUUID->"c61733eb-96ea-4a01-9ed7-cea26dfdf0c4"]
+}, Open  ]],
+Cell[4038, 104, 3858, 99, 430, "Input",ExpressionUUID->"a5adc745-1f87-424b-bda8-18b3e154d184"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7933, 208, 498, 8, 45, "Subsubsection",ExpressionUUID->"96c1a67a-d216-4f0b-95a5-563f5925f6ab"],
+Cell[8434, 218, 616, 16, 30, "Input",ExpressionUUID->"3c0a221b-d3aa-440b-8da4-7f018685f72f"],
+Cell[9053, 236, 269, 5, 30, "Input",ExpressionUUID->"e95a4835-632d-430d-94ea-085b31f6b38c"],
+Cell[CellGroupData[{
+Cell[9347, 245, 626, 12, 52, "Input",ExpressionUUID->"d4883607-35e0-4bea-aa4f-c8042200d0d5"],
+Cell[9976, 259, 266, 3, 34, "Output",ExpressionUUID->"eec0d09b-7e68-4543-8a74-fc4a6db31141"],
+Cell[10245, 264, 270, 4, 51, "Output",ExpressionUUID->"a34d4a82-ae1d-4cbd-86bf-014fd53740c9"]
+}, Open  ]]
+}, Open  ]],
+Cell[10542, 272, 557, 10, 63, "Subsubsection",ExpressionUUID->"a339a97c-cc49-4dc5-af28-8e8e8421662b"],
+Cell[11102, 284, 332, 5, 37, "Subsubsection",ExpressionUUID->"c1bfed6a-ac71-4cbd-af96-c80a3e441cee"],
+Cell[CellGroupData[{
+Cell[11459, 293, 3291, 102, 106, "Subsubsection",ExpressionUUID->"032228bd-e22e-47b1-96b2-9745e1e357a7"],
+Cell[14753, 397, 1159, 33, 94, "Input",ExpressionUUID->"d6a29f0c-7e16-4f7b-b318-d8af566f44a2"],
+Cell[15915, 432, 1056, 25, 94, "Input",ExpressionUUID->"c110acd6-c5bb-47b0-b316-46e16674e297"],
+Cell[CellGroupData[{
+Cell[16996, 461, 466, 10, 30, "Input",ExpressionUUID->"214d1ba6-b700-430c-8003-2a166e9e0ba8"],
+Cell[17465, 473, 839, 24, 51, "Output",ExpressionUUID->"6a6dd829-b06e-486a-8c1c-4ff1cf996d84"]
+}, Open  ]],
+Cell[18319, 500, 947, 25, 107, "Input",ExpressionUUID->"9de61f29-92c5-4762-a038-bd1c471573df"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19303, 530, 590, 10, 63, "Subsubsection",ExpressionUUID->"1984a5ec-9507-4943-86eb-1e957d981ac8"],
+Cell[CellGroupData[{
+Cell[19918, 544, 1950, 39, 178, "Input",ExpressionUUID->"489176b4-9d63-45dd-86ef-966c571b9676"],
+Cell[21871, 585, 10455, 230, 400, "Output",ExpressionUUID->"6d6ee7f6-2a7c-4edd-84cf-95293cc464b1"]
+}, Open  ]]
+}, Open  ]],
+Cell[32353, 819, 222, 4, 45, "Subsubsection",ExpressionUUID->"7c69779f-e814-4306-b5a1-fd7956940e23"],
+Cell[32578, 825, 247, 4, 37, "Subsubsection",ExpressionUUID->"c32edd1c-2bae-40ee-b56a-52fa8f9b6379"],
+Cell[32828, 831, 444, 7, 63, "Subsubsection",ExpressionUUID->"957361e0-21a9-49e8-8c69-18cf67e8e016"],
+Cell[33275, 840, 281, 6, 33, "Subsubsection",ExpressionUUID->"bc8a4de4-9f35-4d16-b0d5-0ab2e5cda3fe"],
+Cell[33559, 848, 8390, 292, 187, "Subsubsection",ExpressionUUID->"fdbab566-65f3-4c2e-be53-21a600057755"],
+Cell[41952, 1142, 263, 4, 37, "Subsubsection",ExpressionUUID->"6aeebd22-bece-411c-8a79-fa925b0f1da3"],
+Cell[42218, 1148, 453, 14, 91, "Subsubsection",ExpressionUUID->"2d17f10f-47d7-4025-9943-373f7cadfee6"],
+Cell[CellGroupData[{
+Cell[42696, 1166, 231, 4, 37, "Subsubsection",ExpressionUUID->"68d29a07-502e-4f4c-8994-126ccd9445b8"],
+Cell[CellGroupData[{
+Cell[42952, 1174, 751, 17, 30, "Input",ExpressionUUID->"30c8d6ec-31d1-46bd-8ac0-cd7142f3a35d"],
+Cell[43706, 1193, 340, 6, 34, "Output",ExpressionUUID->"48312c2d-1b73-4f77-8d6c-9715606245f5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[44083, 1204, 268, 7, 30, "Input",ExpressionUUID->"906701cd-dd87-4a7b-8ab6-50ffd52f6195"],
+Cell[44354, 1213, 189, 3, 34, "Output",ExpressionUUID->"a64113ac-8d6d-470a-b470-246a01ebf173"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[44580, 1221, 351, 5, 30, "Input",ExpressionUUID->"9935921c-d415-4ef5-a776-51a79557274e"],
+Cell[44934, 1228, 267, 3, 34, "Output",ExpressionUUID->"df0e5b48-1465-4707-bfc1-8d8ec0523d79"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
